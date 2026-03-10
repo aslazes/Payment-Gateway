@@ -134,6 +134,27 @@ paths:
                   value:
                     code: INVALID_AMOUNT
                     message: Указана некорректная сумма для возврата
+  /refunds:
+    get:
+      summary: Получить список возвратов
+      parameters:
+        - in: query
+          name: paymentId
+          schema:
+            type: string
+        - in: query
+          name: orderId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список возвратов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
 components:
   schemas:
     PaymentCreate:
