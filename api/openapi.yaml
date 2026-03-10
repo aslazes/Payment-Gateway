@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: Payment Gateway MVP API
+  version: 1.0.0
+  description: REST API для внутреннего платежного шлюза (MVP)
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/DZMSHNKVA/Payment_Gateway/1.0.0
+  - url: https://api.example.com
+paths:
+  /payments:
+    post:
+      summary: Создать платеж
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreate'
+      responses:
+        '201':
+          description: Платеж создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Ошибка в запросе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_card:
+                  summary: Недействительная карта
+                  value:
+                    code: INVALID_CARD
+                    message: Номер карты некорректен или недействителен
+                insufficient_funds:
+                  summary: Недостаточно средств
+                  value:
+                    code: INSUFFICIENT_FUNDS
+                    message: На карте недостаточно средств
+                card_declined:
+                  summary: Отказ банка
+                  value:
+                    code: CARD_DECLINED
+                    message: Банк отклонил платёж
+    get:
+      summary: Получить историю платежей
+      parameters:
+        - in: query
+          name: orderId
+          schema:
+            type: string
+        - in: query
+          name: customerId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список платежей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+  /payments/{paymentId}:
+    get:
+      summary: Получить статус платежа
+      parameters:
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Статус платежа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '404':
+          description: Платеж не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                payment_not_found:
+                  summary: Платеж не найден
+                  value:
+                    code: PAYMENT_EXPIRED
+                    message: Платеж с таким ID не найден или истёк
+  /payments/{paymentId}/refunds:
+    post:
+      summary: Создать возврат
+      parameters:
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundCreate'
+      responses:
+        '201':
+          description: Возврат создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+        '400':
+          description: Ошибка в запросе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                refund_not_allowed:
+                  summary: Возврат невозможен
+                  value:
+                    code: REFUND_NOT_ALLOWED
+                    message: Возврат по этому платежу невозможен
+                invalid_amount:
+                  summary: Некорректная сумма
+                  value:
+                    code: INVALID_AMOUNT
+                    message: Указана некорректная сумма для возврата
+components:
+  schemas:
+    PaymentCreate:
+      type: object
+      required: [orderId, amount, currency, cardToken]
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+          example: EUR
+        cardToken:
+          type: string
+    Payment:
+      type: object
+      properties:
+        paymentId:
+          type: string
+        orderId:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, SUCCEEDED, FAILED]
+        amount:
+          type: number
+        currency:
+          type: string
+          example: EUR
+        redirectUrl:
+          type: string
+          nullable: true
+    RefundCreate:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: number
+    Refund:
+      type: object
+      properties:
+        refundId:
+          type: string
+        paymentId:
+          type: string
+        status:
+          type: string
+          enum: [REQUESTED, REFUNDED, FAILED]
+        amount:
+          type: number
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum: [
+            INVALID_CARD,           # Недействительная карта
+            INSUFFICIENT_FUNDS,     # Недостаточно средств
+            CARD_DECLINED,          # Отказ банка
+            EXPIRED_CARD,           # Истёк срок карты
+            PAYMENT_EXPIRED,        # Истёк срок платежа
+            REFUND_NOT_ALLOWED,     # Возврат невозможен
+            INVALID_AMOUNT,         # Некорректная сумма
+            DUPLICATE_ORDER         # Дубликат заказа
+          ]
+        message:
+          type: string
+      example:
+        code: INVALID_CARD
+        message: Номер карты некорректен или недействителен
