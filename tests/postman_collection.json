@@ -1,0 +1,448 @@
+{
+  "info": {
+    "_postman_id": "9bc0f6c3-a60e-4ae7-9e2d-8d05da1a9aa9",
+    "name": "Payment Gateway API",
+    "description": "[StartFragmentPostman collection for testing Payment Gateway pet project API.<br>Base URL: http://localhost:4010EndFragment<br><br>](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53075063",
+    "_collection_link": "https://go.postman.co/collection/53075063-9bc0f6c3-a60e-4ae7-9e2d-8d05da1a9aa9?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Payment Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payments/pay_demo_1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "pay_demo_1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Get Payment Status",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payments/pay_demo_1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                "pay_demo_1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "111"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 10 Mar 2026 13:43:27 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"paymentId\": \"string\",\n    \"orderId\": \"string\",\n    \"status\": \"PENDING\",\n    \"amount\": 0,\n    \"currency\": \"EUR\",\n    \"redirectUrl\": \"string\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Prefer",
+            "value": "code=201",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"orderId\": \"ORD-100500\",\r\n  \"amount\": 149.9,\r\n  \"currency\": \"EUR\",\r\n  \"cardToken\": \"tok_demo_123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "New Request",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "code=201",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"orderId\": \"ORD-100500\",\r\n  \"amount\": 149.9,\r\n  \"currency\": \"EUR\",\r\n  \"cardToken\": \"tok_demo_123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "111"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 10 Mar 2026 13:41:30 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"paymentId\": \"string\",\n    \"orderId\": \"string\",\n    \"status\": \"PENDING\",\n    \"amount\": 0,\n    \"currency\": \"EUR\",\n    \"redirectUrl\": \"string\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create Refund",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Prefer",
+            "value": "code=201",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"amount\": 49.9\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/payments/pay_demo_1/refunds",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments",
+            "pay_demo_1",
+            "refunds"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Create Refund",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "code=201",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 49.9\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments/pay_demo_1/refunds",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                "pay_demo_1",
+                "refunds"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "74"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 10 Mar 2026 13:45:31 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"refundId\": \"string\",\n    \"paymentId\": \"string\",\n    \"status\": \"REQUESTED\",\n    \"amount\": 0\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Payments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payments?orderId=ORD-100500",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ],
+          "query": [
+            {
+              "key": "orderId",
+              "value": "ORD-100500"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "List Payments",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payments?orderId=ORD-100500",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "ORD-100500"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "113"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 10 Mar 2026 13:46:32 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"paymentId\": \"string\",\n        \"orderId\": \"string\",\n        \"status\": \"PENDING\",\n        \"amount\": 0,\n        \"currency\": \"EUR\",\n        \"redirectUrl\": \"string\"\n    }\n]"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
