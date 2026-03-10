@@ -54,7 +54,7 @@ Database — хранение информации о транзакциях
 
 
 ## Поток платежа (упрощённая диаграмма)
-![Поток платежа](docs/images/sequenceDiagram.svg)
+![Поток платежа](docs/images/sequenceDiagram.png)
 ---
 
 
