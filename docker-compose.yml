@@ -1,0 +1,74 @@
+services:
+  prism:
+    image: stoplight/prism:4
+    container_name: payment-gateway-prism
+    command: ["mock", "-h", "0.0.0.0", "/tmp/openapi.yaml"]
+    ports:
+      - "4010:4010"
+    volumes:
+      - ./api/openapi.yaml:/tmp/openapi.yaml:ro
+    networks:
+      - payment-gateway
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: payment-gateway-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - payment-gateway
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: payment-gateway-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - payment-gateway
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: payment-gateway-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    networks:
+      - payment-gateway
+
+  mock-gateway:
+    build: ./mock-gateway
+    container_name: payment-gateway-mock-gateway
+    depends_on:
+      - prism
+      - kafka
+    environment:
+      PRISM_BASE_URL: http://prism:4010
+      KAFKA_BROKER: kafka:9092
+      PAYMENTS_TOPIC: payments.lifecycle
+      REFUNDS_TOPIC: payments.refunds
+    networks:
+      - payment-gateway
+
+networks:
+  payment-gateway:
+    driver: bridge

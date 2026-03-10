@@ -138,6 +138,121 @@ payment-gateway-pet-project
 
 ---
 
+## Быстрый старт: поднять Prism + Kafka + mock-gateway
+
+Ниже приведён минимальный сценарий, который позволяет «с нуля» поднять инфраструктуру, прогнать демо-поток платежа/возврата и увидеть события в Kafka UI.
+
+### 1. Предварительные требования
+
+- **Docker** и **Docker Compose** установлены локально.
+- Порт `4010` свободен (Prism), порт `8080` свободен (Kafka UI), порт `29092` свободен (внешний доступ к Kafka).
+
+### 2. Клонировать репозиторий
+
+```bash
+git clone <url-репозитория>
+cd Payment-Gateway
+```
+
+### 3. Запустить docker-compose
+
+В корне проекта есть файл `docker-compose.yml`, который поднимает сразу несколько сервисов:
+
+- `prism` — mock REST API по спецификации `api/openapi.yaml`;
+- `zookeeper` + `kafka` — брокер Kafka для событий;
+- `kafka-ui` — web-интерфейс для просмотра топиков и сообщений;
+- `mock-gateway` — небольшой сервис, который ходит в Prism и публикует события в Kafka.
+
+Запуск:
+
+```bash
+docker compose up -d
+```
+
+Проверить, что все контейнеры поднялись:
+
+```bash
+docker compose ps
+```
+
+Ожидаемые сервисы:
+
+- `payment-gateway-prism` (порт `4010`);
+- `payment-gateway-zookeeper`;
+- `payment-gateway-kafka` (порт `29092`);
+- `payment-gateway-kafka-ui` (порт `8080`);
+- `payment-gateway-mock-gateway`.
+
+### 4. Проверить Prism (mock REST API)
+
+Prism поднимается на `http://localhost:4010` и мокает спецификацию `api/openapi.yaml`.
+
+Примеры:
+
+- Создать платёж:
+
+```bash
+curl -X POST "http://localhost:4010/payments" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"orderId\":\"ORD-100500\",\"amount\":149.9,\"currency\":\"EUR\",\"cardToken\":\"tok_demo_123\"}"
+```
+
+- Получить статус платежа:
+
+```bash
+curl "http://localhost:4010/payments/pay_demo_1"
+```
+
+(конкретные значения `paymentId` зависят от поведения Prism/mock-а.)
+
+### 5. Что делает mock-gateway
+
+Сервис `mock-gateway` автоматически запускается вместе с `docker-compose` и выполняет демо-поток:
+
+1. Делает `POST /payments` к Prism, создавая тестовый платёж.
+2. Публикует в Kafka последовательность событий:
+   - `payment_created`
+   - `payment_succeeded`
+3. Делает `POST /payments/{paymentId}/refunds` к Prism (демо-запрос возврата).
+4. Публикует события:
+   - `refund_requested`
+   - `refund_completed`
+
+Логи можно посмотреть командой:
+
+```bash
+docker logs -f payment-gateway-mock-gateway
+```
+
+### 6. Смотреть события в Kafka UI
+
+Kafka UI доступен по адресу:
+
+```text
+http://localhost:8080
+```
+
+Дальше:
+
+1. Открыть кластер `local`.
+2. Перейти в раздел **Topics**.
+3. Найти и открыть топики:
+   - `payments.lifecycle` — события о жизенном цикле платежей (`payment_created`, `payment_succeeded`, `payment_failed`).
+   - `payments.refunds` — события о возвратах (`refund_requested`, `refund_completed`).
+4. В разделе **Messages** увидеть опубликованные mock-gateway JSON-сообщения (структура совпадает с описанной в `docs/events.md` и примерами из `kafka/examples`).
+
+При перезапуске `mock-gateway` (например, через `docker restart payment-gateway-mock-gateway`) демо-поток можно повторять, порождая новые события.
+
+### 7. Остановка окружения
+
+Чтобы остановить и удалить контейнеры:
+
+```bash
+docker compose down
+```
+
+---
+
 # REST API
 
 Спецификация API представлена в формате OpenAPI:

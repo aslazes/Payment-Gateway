@@ -1,0 +1,15 @@
+{
+  "eventType": "payment_succeeded",
+  "eventId": "evt_payment_succeeded_001",
+  "occurredAt": "2026-03-10T10:16:42Z",
+  "payload": {
+    "paymentId": "pay_abc123",
+    "orderId": "ORD-100500",
+    "amount": 149.9,
+    "currency": "EUR",
+    "status": "SUCCEEDED",
+    "providerTransactionId": "acq_txn_987654321",
+    "completedAt": "2026-03-10T10:16:40Z"
+  }
+}
+

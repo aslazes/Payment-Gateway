@@ -1,0 +1,14 @@
+{
+  "name": "mock-gateway",
+  "version": "1.0.0",
+  "description": "Demo mock gateway that calls Prism API and publishes events to Kafka",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "kafkajs": "^2.2.4"
+  }
+}
+

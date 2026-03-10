@@ -1,0 +1,14 @@
+{
+  "eventType": "refund_requested",
+  "eventId": "evt_refund_requested_001",
+  "occurredAt": "2026-03-10T11:05:00Z",
+  "payload": {
+    "refundId": "ref_777",
+    "paymentId": "pay_abc123",
+    "orderId": "ORD-100500",
+    "amount": 49.9,
+    "currency": "EUR",
+    "status": "REQUESTED"
+  }
+}
+

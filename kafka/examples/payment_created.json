@@ -1,0 +1,14 @@
+{
+  "eventType": "payment_created",
+  "eventId": "evt_payment_created_001",
+  "occurredAt": "2026-03-10T10:15:30Z",
+  "payload": {
+    "paymentId": "pay_abc123",
+    "orderId": "ORD-100500",
+    "amount": 149.9,
+    "currency": "EUR",
+    "status": "PENDING",
+    "redirectUrl": "https://pay.example-bank.com/redirect/abc123"
+  }
+}
+
